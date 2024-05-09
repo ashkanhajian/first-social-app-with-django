@@ -1,9 +1,10 @@
 
-{% block title %}register{% endblock %}
-{% block content %}
+
+<form method="POST">
     <h1>register</h1>
     <p>enter your information</p>
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Done">
-{% endblock %}
+
+</form>
