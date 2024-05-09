@@ -121,3 +121,10 @@ AUTH_USER_MODEL = 'social.User'
 MEDIA_URL = '/images/'
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
+LOGOUT_URL = "/logout/"
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'social.authentication.PhoneAuthBackend'
+]
