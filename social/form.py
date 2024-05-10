@@ -45,3 +45,24 @@ class EditUserForm(forms.ModelForm):
         if User.objects.exclude(id=self.instance.id).filter(username=username).exists():
             raise forms.ValidationError('username is already exits!')
         return username
+
+
+class TicketForm(forms.Form):
+    Subject_Choice = (
+        ("پیشنهاد", "پیشنهاد"),
+        ("انتقاد", "انتقاد"),
+        ("گزارش مشکل", "گزارش مشکل")
+    )
+    message = forms.CharField(widget=forms.Textarea, required=True)
+    name = forms.CharField(max_length=250, required=True)
+    email = forms.EmailField()
+    phone = forms.CharField(max_length=11, required=True)
+    subject = forms.ChoiceField(choices=Subject_Choice)
+
+    def clean(self):
+        phone = self.cleaned_data['phone']
+        if phone:
+            if not phone.isnumeric():
+                raise forms.ValidationError("enter just number")
+            else:
+                return phone

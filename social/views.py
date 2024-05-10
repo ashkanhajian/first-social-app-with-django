@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector, TrigramSimilarity
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -51,3 +52,19 @@ def edit_account(request):
     }
 
     return render(request, 'registration/edit_account.html', {'user_form': user_form, 'context': context})
+
+
+def ticket(request):
+    send = False
+
+    if request.method == "POST":
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            messge = f"{cd["name"]}\n{cd["email"]}\n{cd["phone"]}\n{cd['massage']}"
+            send_mail(cd['subject'], messge, 'ashkan.spg@gmail.com')
+            send = True
+
+    else:
+        form = TicketForm()
+    return render(request, 'forms/ticket.html', {'form': form, 'send': send})
