@@ -9,6 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector, TrigramSimilarity
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from .models import *
+from taggit.models import Tag
 
 
 # Create your views here.
@@ -68,3 +70,16 @@ def ticket(request):
     else:
         form = TicketForm()
     return render(request, 'forms/ticket.html', {'form': form, 'send': send})
+
+
+def post_list(request, tag_slug=None):
+    posts = Post.objects.all()
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = Post.objects.filter(tags__in=[tag])
+    context = {
+        'posts': posts,
+        'tag': tag,
+    }
+    return render(request, 'social/list.html', context=context)
