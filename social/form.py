@@ -66,3 +66,9 @@ class TicketForm(forms.Form):
                 raise forms.ValidationError("enter just number")
             else:
                 return phone
+
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['tags', 'description']
