@@ -10,6 +10,7 @@
     <br>
     Published at {{ post.created }} by {{ post.author }}
     <br>
+
     {% for tag in post.tags.all %}
         <a href="{% url 'social:post_list_by_tag' tag.slug %}">tags:{{ tag.name }}</a>
         {% if not forloop.last %},{% endif %}
