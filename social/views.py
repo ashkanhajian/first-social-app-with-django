@@ -64,8 +64,8 @@ def ticket(request):
         form = TicketForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            messge = f"{cd["name"]}\n{cd["email"]}\n{cd["phone"]}\n{cd['massage']}"
-            send_mail(cd['subject'], messge, 'ashkan.spg@gmail.com')
+            message = f"{cd["name"]}\n{cd["email"]}\n{cd["phone"]}\n{cd['massage']}"
+            send_mail(cd['subject'], message, 'ashkan.spg@gmail.com')
             send = True
 
     else:
@@ -112,3 +112,20 @@ def post_detail(request, pk):
 
     }
     return render(request, "social/detail.html", context)
+
+
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comment = None
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.save()
+    context = {
+        'post': post,
+        'form': form,
+        'comment': comment
+    }
+    return render(request, "forms/comment.html", context)

@@ -14,3 +14,15 @@ Published at {{ post.created }} by {{ post.author }}
     {% empty %}
     There are no similar post
 {% endfor %}
+<img class="rounded" src="{{ post.images.first.image_file.url}}" alt="">
+<div>
+					<h3>ثبت دیدگاه</h3>
+					<small>آدرس ایمیل شما منتشر نخواهد شد.</small>
+					<form  method="post" action="{% url 'social:post_comment' post.id %}" >
+						{% csrf_token %}
+						{{ form.as_div }}
+					  <div class="col-12">
+					    <button type="submit" class="btn btn-primary">ثبت</button>
+					  </div>
+					</form>
+				</div>

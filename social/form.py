@@ -69,6 +69,24 @@ class TicketForm(forms.Form):
 
 
 class CreatePostForm(forms.ModelForm):
+    image1 = forms.ImageField(label="Image", required=False,
+                              widget=forms.FileInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Post
         fields = ['tags', 'description']
+
+
+class CommentForm(forms.ModelForm):
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if name:
+            if len(name) < 3:
+                raise forms.ValidationError("short name")
+            else:
+                return name
+
+    class Meta:
+        model = Comment
+        fields = ['name', 'body']
+
