@@ -27,6 +27,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
 
     # choice fields
 

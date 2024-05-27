@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404,JsonResponse
 from .models import *
 from .form import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -129,3 +129,29 @@ def post_comment(request, post_id):
         'comment': comment
     }
     return render(request, "forms/comment.html", context)
+
+
+@login_required
+@require_POST
+def like_post(request):
+    post_id = request.POST.get('post_id')
+    if post_id is not None:
+        post = get_object_or_404(Post, id=post_id)
+        user = request.user
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            liked = False
+        else:
+            post.likes.add(user)
+            liked = True
+
+        post_likes_count = post.likes.count()
+        response_data = {
+            'liked': liked,
+            'likes_count': post_likes_count,
+        }
+    else:
+        response_data = {'error': 'Invalid post_id'}
+
+    return JsonResponse(response_data)
