@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, Http404,JsonResponse
+from django.http import HttpResponse, Http404, JsonResponse
 from .models import *
 from .form import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -73,12 +73,36 @@ def ticket(request):
     return render(request, 'forms/ticket.html', {'form': form, 'send': send})
 
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import render, get_object_or_404
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import render, get_object_or_404
+
+
 def post_list(request, tag_slug=None):
     posts = Post.objects.all()
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
-        posts = Post.objects.filter(tags__in=[tag])
+        posts = posts.filter(tags__in=[tag])
+
+    paginator = Paginator(posts, 2)
+    page = request.GET.get('page')
+
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = []
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if posts:
+            return render(request, 'social/list_ajax.html', {'posts': posts})
+        else:
+            return HttpResponse('')  # Return an empty response if no posts are found
+
     context = {
         'posts': posts,
         'tag': tag,
