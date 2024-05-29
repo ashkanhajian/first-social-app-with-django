@@ -50,6 +50,7 @@ def edit_account(request):
 
         if user_form.is_valid():
             user_form.save()
+        return redirect('social:profile')
     else:
         user_form = EditUserForm(instance=request.user)
     context = {
@@ -180,16 +181,26 @@ def like_post(request):
 @require_POST
 def save_post(request):
     post_id = request.POST.get('post_id')
-    if post_id is not None:
-        post = Post.objects.get(id=post_id)
-        user = request.user
+    post = Post.objects.get(id=post_id)
+    user = request.user
 
-        if user in post.saved_by.all():
-            post.saved_by.remove(user)
-            saved = False
-        else:
-            post.saved_by.add(user)
-            saved = True
+    if user in post.saved_by.all():
+        post.saved_by.remove(user)
+        saved = False
+    else:
+        post.saved_by.add(user)
+        saved = True
 
-        return JsonResponse({'saved': saved})
-    return JsonResponse({'error': "Invalid request"})
+    return JsonResponse({'saved_posts': saved})
+
+
+@login_required
+def user_list(request):
+    users = User.objects.filter(is_active=True)
+    return render(request, 'user/user_list.html', {'users': users})
+
+
+@login_required
+def user_detail(request, username):
+    users = get_object_or_404(User, username=username, is_active=True)
+    return render(request, 'user/user_detail.html', {'users': users})

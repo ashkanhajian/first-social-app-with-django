@@ -2,6 +2,7 @@
 {% load thumbnail %}
 {% with user=request.user %}
     <p>{{ request.user.get_full_name}}</p>
+    <button>follow/unfollow</button>
     {% if user.photo %}
         <a href="{{ user.photo }}">
         <img src="{% thumbnail user.photo 200x0 quality=80 %}">
@@ -11,15 +12,7 @@
     <img src="{% static 'images/profile/Avatar.png.jpg' %}">
 {% endwith %}
 
-
-
-<h2> Saved Post </h2>
-<ul>
-    {% for post in saved_posts %}
-        <a href="{{ post.get_absolute_url }}">
-        {{ post.description |truncatewords:20|linebreaks }}
-        </a>
-        Published at {{ post.created }} by {{ post.author }}
-            <br><br><hr>
-    {% endfor %}
-</ul>
+{% with total_followers=followers.count total_following=user.following.count %}
+    <p>{{ total_followers}}FOllOWer{{ total_followers|pluralize }}</p>
+    <p>{{ total_following}}FOllOWer{{ total_following|pluralize }}</p>
+{% endwith %}

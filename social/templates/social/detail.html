@@ -52,6 +52,7 @@ $(document).ready(function() {
     $('.like-button').click(function() {
         var button = $(this);
         var postId = button.closest('.post').data('post-id');
+        console.log("Post ID for like:", postId);
 
         $.ajax({
             type: 'POST',
@@ -79,6 +80,7 @@ $(document).ready(function() {
     $('.save-post').click(function() {
         var button = $(this);
         var postId = button.closest('.post').data('post-id');
+        console.log("Post ID for save:", postId);
 
         $.ajax({
             type: 'POST',

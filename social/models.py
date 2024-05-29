@@ -13,6 +13,10 @@ class User(AbstractUser):
     photo = models.ImageField(verbose_name="user photo", upload_to='account_images/', blank=True, null=True)
     job = models.CharField(max_length=250, verbose_name='jon title', null=True, blank=True)
     phone = models.CharField(max_length=11)
+    following = models.ManyToManyField('self', through='Contact', related_name='followers', symmetrical=False)
+
+    def get_absolute_url(self):
+        return reverse('social:user_detail', args=[self.username])
 
 
 class Post(models.Model):
@@ -28,7 +32,8 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
-    saved_by = models.ManyToManyField(User,related_name='saved_posts')
+    saved_by = models.ManyToManyField(User, related_name='saved_posts')
+
     # choice fields
 
     # reading_time = models.PositiveIntegerField(verbose_name="زمان مطالعه")
@@ -70,3 +75,16 @@ class Comment(models.Model):
     name = models.CharField(max_length=250, verbose_name="username")
     body = models.TextField(verbose_name="comment")
     created = models.DateTimeField(auto_now_add=True, verbose_name="created time")
+
+
+class Contact(models.Model):
+    user_from = models.ForeignKey(User, related_name='rel_from_set', on_delete=models.CASCADE)
+    user_to = models.ForeignKey(User, related_name='rel_to_set', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=['-created_at'])]
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'{self.user_from}follows{self.user_to}'
