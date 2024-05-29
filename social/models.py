@@ -28,7 +28,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
-
+    saved_by = models.ManyToManyField(User,related_name='saved_posts')
     # choice fields
 
     # reading_time = models.PositiveIntegerField(verbose_name="زمان مطالعه")
