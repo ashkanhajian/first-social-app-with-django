@@ -10,6 +10,7 @@
         {% else %}
     {% endif %}
     <img src="{% static 'images/profile/Avatar.png.jpg' %}">
+        <p>Bio:{{ user.bio }}</p>
 {% endwith %}
 
 {% with total_followers=followers.count total_following=user.following.count %}

@@ -28,6 +28,6 @@ urlpatterns = [
     path('like_post', views.like_post, name='like_post'),
     path('save-post/', views.save_post, name='save_post'),
     path('users/', views.user_list, name='user_list'),
-    path('users/detail/', views.user_detail, name='user_list')
+    path('users/<username>/', views.user_detail, name='user_detail')
 ]
 

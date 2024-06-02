@@ -37,6 +37,9 @@ class ImageAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['post', 'name', 'created']
-    list_filter = [ 'created']
+    list_filter = ['created']
     search_fields = ['name', 'body']
     # list_editable = ['active']
+
+
+admin.site.register(Contact)
