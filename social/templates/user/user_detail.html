@@ -1,8 +1,24 @@
 {% load static %}
 {% load thumbnail %}
-{% with user=request.user %}
-    <p>{{ request.user.get_full_name}}</p>
-    <button>follow/unfollow</button>
+
+
+    <p>{{ user.get_full_name}}</p>
+    {% if request.user == user %}
+    <button disabled>
+        {% if request.user in user.followers.all %}
+            UnFollow
+        {% else %}
+            Follow
+        {% endif %}
+    </button>
+    {% else %}
+        <button class="follow-button">
+        {% if request.user in user.followers.all %}
+            UnFollow
+        {% else %}
+            Follow
+        {% endif %}
+    {% endif %}
     {% if user.photo %}
         <a href="{{ user.photo }}">
         <img src="{% thumbnail user.photo 200x0 quality=80 %}">
@@ -11,9 +27,43 @@
     {% endif %}
     <img src="{% static 'images/profile/Avatar.png.jpg' %}">
         <p>Bio:{{ user.bio }}</p>
-{% endwith %}
+
 
 {% with total_followers=followers.count total_following=user.following.count %}
-    <p>{{ total_followers}}FOllOWer{{ total_followers|pluralize }}</p>
-    <p>{{ total_following}}FOllOWer{{ total_following|pluralize }}</p>
+    <span class="followers-count">{{ total_followers }} Follower{{ total_followers|pluralize }}</span>
+    <span class="following-count">{{ total_following }} Following{{ total_following|pluralize  }}</span>
+
 {% endwith %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+$(document).ready(function() {
+    $('.follow-button').click(function() {
+        var button = $(this);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "social:user_follow" %}',
+            data: {
+                'id': {{user.id}},
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data.follow) {
+                    button.text('unfollow');
+                    button.removeClass('fa-heartbeat').addClass('fa-heart');
+                } else {
+                    button.text('follow');
+                    button.removeClass('fa-heart').addClass('fa-heartbeat');
+                }
+                $('#followers-count').text(data.followers_count + Followers{{ total_followers|pluralize }});
+                $('#following-count').text(data.following_count +Following{{ total_following|pluralize  }});
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.error('Error in like request:', errorThrown);
+            }
+        });
+    });
+});
+</script>

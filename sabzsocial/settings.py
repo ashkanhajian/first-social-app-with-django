@@ -141,6 +141,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = 'sidtxbaduqlvxabb'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# ABSOLUTE_URL_OVERRIDES = {
-#     's.user': lambda u: reverse_lazy('social:user_detail', args=[u.username])
-# }
+ABSOLUTE_URL_OVERRIDES = {
+    's.user': lambda u: reverse_lazy('social:user_detail', args=[u.username])
+}
