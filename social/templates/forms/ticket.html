@@ -1,6 +1,8 @@
  <form method="post">
-    {% if sent %}
-        <h1> your email has sent</h1>
+    {% if messages %}
+     {% for messages in messages%}
+         {{ messages }}
+     {% endfor %}
     {% endif %}
     {% csrf_token %}
         {% for field in form %}

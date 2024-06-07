@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from .models import *
 from taggit.models import Tag
+from django.contrib import messages
 
 
 # Create your views here.
@@ -25,7 +26,7 @@ def index(request):
 
 
 def profile(request):
-    user = request.user
+    user = User.objects.prefetch_related('followers', 'following').get(id=request.user)
     saved_posts = user.saved_posts.all()
     return render(request, 'social/profile.html', {'saved_posts': saved_posts})
 
@@ -69,15 +70,14 @@ def ticket(request):
             cd = form.cleaned_data
             message = f"{cd["name"]}\n{cd["email"]}\n{cd["phone"]}\n{cd['massage']}"
             send_mail(cd['subject'], message, 'ashkan.spg@gmail.com')
-            send = True
-
+            messages.success(request, 'your email been send')
     else:
         form = TicketForm()
-    return render(request, 'forms/ticket.html', {'form': form, 'send': send})
+    return render(request, 'forms/ticket.html', {'form': form})
 
 
 def post_list(request, tag_slug=None):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('author').order_by('-total_likes')
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
