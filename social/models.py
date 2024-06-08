@@ -26,7 +26,7 @@ class Post(models.Model):
 
     description = models.TextField(verbose_name="توضیحات")
 
-    # date
+    active = models.BooleanField(default=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

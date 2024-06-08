@@ -21,12 +21,18 @@ class UserAdmin(UserAdmin):
     )
 
 
+def make_deactivation(modeladmin, request, queryset):
+    result = queryset.update(active=True)
+    modeladmin.message_user(request, f"{result}post was deleted")
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['author', 'created']
+    list_display = ['author', 'created', 'description']
     ordering = ['created']
     search_fields = ['description']
     inlines = [ImageInline, CommentInline]
+    actions = [make_deactivation]
 
 
 @admin.register(Image)
